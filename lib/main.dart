@@ -107,7 +107,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
+
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.greenAccent,
         items: const <BottomNavigationBarItem>[
@@ -157,9 +159,15 @@ class MyCustomFormState extends State<MyCustomForm> {
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
+      child: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Image.network(
+            'https://sandycrazylocus.neeltron.repl.co/frog.jpg',
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
           TextFormField(
             decoration: const InputDecoration(labelText: 'Name of the Animal'),
             validator: (value) {
@@ -204,6 +212,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
