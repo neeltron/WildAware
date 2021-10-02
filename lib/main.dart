@@ -5,7 +5,7 @@ import 'dart:convert';
 
 Future<Album> createAlbum(String aname, String loc, String desc) async {
   final response = await http.get(
-    Uri.parse('https://WildAware-Server-and-Hardware.neeltron.repl.co?name='+aname+'&loc='+loc+'&desc='+desc),
+    Uri.parse('https://WildAware-Server-and-Hardware.neeltron.repl.co/input?aname='+aname+'&loc='+loc+'&desc='+desc),
   );
   print(response.body);
   if (response.statusCode == 200) {
@@ -24,7 +24,7 @@ class Album {
 
   factory Album.fromJson(Map<String, dynamic> json) {
     return Album(
-      aname: json['name'],
+      aname: json['aname'],
       loc: json['heading'],
       desc: json['desc'],
     );
