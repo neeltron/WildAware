@@ -1,4 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+
+Future<Album> createAlbum(String aname, String loc, String desc) async {
+  final response = await http.get(
+    Uri.parse('https://WildAware-Server-and-Hardware.neeltron.repl.co?name='+aname+'&loc='+loc+'&desc='+desc),
+  );
+  print(response.body);
+  if (response.statusCode == 200) {
+    return Album.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to create album.');
+  }
+}
+
+class Album {
+  final String aname;
+  final String loc;
+  final String desc;
+
+  Album({required this.aname, required this.loc, required this.desc});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(
+      aname: json['name'],
+      loc: json['heading'],
+      desc: json['desc'],
+    );
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +44,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'WildAware'),
     );
   }
 }
@@ -26,14 +57,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,6 +166,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _loc = TextEditingController();
+  final TextEditingController _desc = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +186,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Name of the Animal'),
+              controller: _name,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
@@ -169,6 +196,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Location'),
+              controller: _loc,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
@@ -178,6 +206,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Description'),
+              controller: _desc,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
@@ -189,10 +218,12 @@ class MyCustomFormState extends State<MyCustomForm> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 onPressed: () {
+
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );
+                    createAlbum(_name.text, _loc.text, _desc.text);
                   }
                 },
                 child: const Text('Submit'),
