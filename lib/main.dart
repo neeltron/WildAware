@@ -85,12 +85,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       'All sightings here',
       style: optionStyle,
     ),
-
     MyCustomForm(),
-    Text(
-      'Choose location and stuff here',
-      style: optionStyle,
-    ),
   ];
 
   void _onItemTapped(int index) {
@@ -117,14 +112,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.nature_people_outlined),
             label: 'Report a Sighting',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -160,59 +150,56 @@ class MyCustomFormState extends State<MyCustomForm> {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            'https://sandycrazylocus.neeltron.repl.co/frog.jpg',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Name of the Animal'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Location'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Description'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                }
-              },
-              child: const Text('Submit'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(
+              'https://sandycrazylocus.neeltron.repl.co/frog.jpg',
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-          ),
-        ],
-      ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Name of the Animal'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Location'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Description'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Processing Data')),
+                    );
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
