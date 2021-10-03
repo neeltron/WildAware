@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 Future<Album> createAlbum(String aname, String loc, String desc) async {
   final response = await http.get(
-    Uri.parse('https://WildAware-Server-and-Hardware.neeltron.repl.co/input?aname='+aname+'&loc='+loc+'&desc='+desc),
+    Uri.parse(
+        'https://WildAware-Server-and-Hardware.neeltron.repl.co/input?aname=' +
+            aname +
+            '&loc=' +
+            loc +
+            '&desc=' +
+            desc),
   );
   print(response.body);
   if (response.statusCode == 200) {
@@ -64,27 +71,31 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           children: <Widget>[
             Container(
-            alignment: Alignment.center,
-            child: Image.network(
-              'https://sandycrazylocus.neeltron.repl.co/wildawaremain.png',
-              width: double.infinity,
-              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              child: Image.network(
+                'https://sandycrazylocus.neeltron.repl.co/wildawaremain.png',
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Container(
-            alignment: const Alignment(0, 0.7),
-            child: FlatButton(
-              child: const Text('Get Started', style: TextStyle(fontSize: 20.0),),
-              color: Colors.lightGreen,
-              textColor: Colors.white,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyStatefulWidget()),
-                );
-              },
+            Container(
+              alignment: const Alignment(0, 0.7),
+              child: FlatButton(
+                child: const Text(
+                  'Get Started',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                color: Colors.lightGreen,
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyStatefulWidget()),
+                  );
+                },
+              ),
             ),
-          ),
           ],
         ),
       ),
@@ -102,13 +113,10 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'All sightings here',
-      style: optionStyle,
-    ),
-    MyCustomForm(),
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static final List<Widget> _widgetOptions = <Widget>[
+    allSightings(),
+    const MyCustomForm(),
   ];
 
   void _onItemTapped(int index) {
@@ -125,9 +133,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
-
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.greenAccent,
         items: const <BottomNavigationBarItem>[
@@ -185,7 +191,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               fit: BoxFit.cover,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Name of the Animal'),
+              decoration:
+                  const InputDecoration(labelText: 'Name of the Animal'),
               controller: _name,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -218,7 +225,6 @@ class MyCustomFormState extends State<MyCustomForm> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 onPressed: () {
-
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
@@ -234,4 +240,62 @@ class MyCustomFormState extends State<MyCustomForm> {
       ),
     );
   }
+}
+
+Future<List> getList() async {
+  var url =
+      "https://wiseelementarytelevision.avinashupadhya9.repl.co/sightings";
+  HttpClient client = HttpClient();
+  HttpClientRequest request = await client.getUrl(Uri.parse(url));
+  HttpClientResponse response = await request.close();
+  return response.transform(utf8.decoder).transform(json.decoder).toList();
+}
+
+Widget allSightings() {
+  return FutureBuilder(
+      future: getList(),
+      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            height: 50,
+            color: Colors.lightGreen,
+            child: const Center(child: Text('No animals sighted!')),
+          );
+        }
+        List content = snapshot.data![0];
+        return ListView.separated(
+          padding: const EdgeInsets.all(8),
+          itemCount: content.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Image.network(
+                  content[index]['image_url'],
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                ListTile(
+                  leading: const Icon(Icons.album),
+                  title: Text('${content[index]['name']}'),
+                  subtitle: Text('${content[index]['description']}'),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('Found at ${content[index]['location']}'),
+                    TextButton(
+                      child: const Text('Report'),
+                      onPressed: () {/* ... */},
+                    ),
+                  ],
+                ),
+              ],
+            ));
+          },
+          separatorBuilder: (BuildContext context, int index) =>
+              const Divider(),
+        );
+      });
 }
