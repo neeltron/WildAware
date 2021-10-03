@@ -9,7 +9,7 @@ import 'dart:io';
 Future<Album> createAlbum(String aname, String loc, String desc) async {
   final response = await http.get(
     Uri.parse(
-        'https://WildAware-Server-and-Hardware.neeltron.repl.co/input?aname=' +
+        'https://WildAware-Server-and-Hardware.neeltron.repl.co/input?url=https://news.scranton.edu/articles/2020/09/images/dogs.jpg&aname=' +
             aname +
             '&loc=' +
             loc +
