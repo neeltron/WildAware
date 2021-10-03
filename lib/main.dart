@@ -284,7 +284,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
 Future<List> getList() async {
   var url =
-      "https://wiseelementarytelevision.avinashupadhya9.repl.co/sightings";
+      "https://WildAware-Server-and-Hardware.neeltron.repl.co/output";
   HttpClient client = HttpClient();
   HttpClientRequest request = await client.getUrl(Uri.parse(url));
   HttpClientResponse response = await request.close();
@@ -311,20 +311,20 @@ Widget allSightings() {
                 child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Image.network(
-                  content[index]['image_url'],
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                // Image.network(
+                //   content[index]['image_url'],
+                //   width: double.infinity,
+                //   fit: BoxFit.cover,
+                // ),
                 ListTile(
                   leading: const Icon(Icons.album),
-                  title: Text('${content[index]['name']}'),
-                  subtitle: Text('${content[index]['description']}'),
+                  title: Text('${content[index]['aname']}'),
+                  subtitle: Text('${content[index]['desc']}'),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Found at ${content[index]['location']}'),
+                    Text('Found at ${content[index]['loc']}'),
                     TextButton(
                       child: const Text('Report'),
                       onPressed: () {/* ... */},
