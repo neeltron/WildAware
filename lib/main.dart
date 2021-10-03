@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -211,7 +212,20 @@ class MyCustomFormState extends State<MyCustomForm> {
     }
 
     _locationData = await location.getLocation();
-    return '${_locationData.latitude}, ${_locationData.longitude}';
+    List<geocoding.Placemark> placemarks =
+        await geocoding.placemarkFromCoordinates(
+            _locationData.latitude ?? 0.0, _locationData.longitude ?? 0.0);
+    geocoding.Placemark placeMark = placemarks[0];
+    String? name = placeMark.name;
+    // String subLocality = placeMark.subLocality;
+    String? locality = placeMark.locality;
+    String? administrativeArea = placeMark.administrativeArea;
+    // String subAdministrativeArea = placeMark.administrativeArea;
+    String? postalCode = placeMark.postalCode;
+    String? country = placeMark.country;
+    // String subThoroughfare = placeMark.subThoroughfare;
+    String? thoroughfare = placeMark.thoroughfare;
+    return "$name, $thoroughfare, $locality, $administrativeArea, $postalCode, $country";
   }
 
   Widget reportForm(location) {
@@ -283,8 +297,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 }
 
 Future<List> getList() async {
-  var url =
-      "https://WildAware-Server-and-Hardware.neeltron.repl.co/output";
+  var url = "https://WildAware-Server-and-Hardware.neeltron.repl.co/output";
   HttpClient client = HttpClient();
   HttpClientRequest request = await client.getUrl(Uri.parse(url));
   HttpClientResponse response = await request.close();
