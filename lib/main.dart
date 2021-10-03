@@ -316,39 +316,47 @@ Widget allSightings() {
           );
         }
         List content = snapshot.data![0];
-        return ListView.separated(
-          padding: const EdgeInsets.all(8),
-          itemCount: content.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-                child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                // Image.network(
-                //   content[index]['image_url'],
-                //   width: double.infinity,
-                //   fit: BoxFit.cover,
-                // ),
-                ListTile(
-                  leading: const Icon(Icons.album),
-                  title: Text('${content[index]['aname']}'),
-                  subtitle: Text('${content[index]['desc']}'),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Found at ${content[index]['loc']}'),
-                    TextButton(
-                      child: const Text('Report'),
-                      onPressed: () {/* ... */},
-                    ),
-                  ],
-                ),
-              ],
-            ));
-          },
-          separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
-        );
+        return Column(children: <Widget>[
+          TextField(
+            onChanged: (value) => {},
+            decoration: const InputDecoration(
+                labelText: 'Search', suffixIcon: Icon(Icons.search)),
+          ),
+          Expanded(
+              child: ListView.separated(
+            padding: const EdgeInsets.all(8),
+            itemCount: content.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                  child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image.network(
+                    content[index]['url'],
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.album),
+                    title: Text('${content[index]['aname']}'),
+                    subtitle: Text('${content[index]['desc']}'),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Found at ${content[index]['loc']}'),
+                      TextButton(
+                        child: const Text('Report'),
+                        onPressed: () {/* ... */},
+                      ),
+                    ],
+                  ),
+                ],
+              ));
+            },
+            separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+          ))
+        ]);
       });
 }
