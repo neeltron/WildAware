@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -171,14 +172,53 @@ class MyCustomFormState extends State<MyCustomForm> {
   //
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _name = TextEditingController();
-  final TextEditingController _loc = TextEditingController();
-  final TextEditingController _desc = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+        future: callAsyncFetch(),
+        builder: (context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData) {
+            return reportForm(snapshot.data ?? "");
+          } else {
+            return reportForm("");
+          }
+        });
     // Build a Form widget using the _formKey created above.
+  }
+
+  Future<String> callAsyncFetch() async {
+    Location location = Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return "";
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return "";
+      }
+    }
+
+    _locationData = await location.getLocation();
+    return '${_locationData.latitude}, ${_locationData.longitude}';
+  }
+
+  Widget reportForm(location) {
+    final _formKey = GlobalKey<FormState>();
+    final TextEditingController _name = TextEditingController();
+    final TextEditingController _loc = TextEditingController(text: location);
+    final TextEditingController _desc = TextEditingController();
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
