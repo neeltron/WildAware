@@ -324,11 +324,11 @@ Widget allSightings() {
                 child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                // Image.network(
-                //   content[index]['image_url'],
-                //   width: double.infinity,
-                //   fit: BoxFit.cover,
-                // ),
+                Image.network(
+                  content[index]['image_url'],
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
                 ListTile(
                   leading: const Icon(Icons.album),
                   title: Text('${content[index]['aname']}'),
